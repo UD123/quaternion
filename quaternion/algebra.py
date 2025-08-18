@@ -397,6 +397,15 @@ class Quaternion:
     @property
     def magnitude(self):
         return self.norm
+    
+    @property
+    def elements(self):
+        """ Return all the elements of the quaternion object.
+
+        Returns:
+            A numpy 4-array of floats. NOT guaranteed to be a unit vector
+        """
+        return self.q    
 
 
     def _validate_number_sequence(self, seq, n):
@@ -648,8 +657,8 @@ class Quaternion:
     # Exponentiation
     def __pow__(self, exponent):
         # source: https://en.wikipedia.org/wiki/Quaternion#Exponential.2C_logarithm.2C_and_power
-        exponent = float(exponent) # Explicitly reject non-real exponents
-        norm = self.norm
+        exponent    = float(exponent) # Explicitly reject non-real exponents
+        norm        = self.norm
         if norm > 0.0:
             try:
                 n, theta = self.polar_decomposition
