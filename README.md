@@ -8,7 +8,18 @@ Operation on quarternions using Clifford Algebra (0,2,0)
 
 # Visualization
 
-Eqch quarternion is shown as a pointing vector with orientation represented by a flag.
+Each quarternion is shown as a pointing vector with orientation represented by a flag.
+
+# Installation on Windows
+
+1. PowerShell 
+C:\Users\udubin\AppData\Local\Programs\Python\Python310\python.exe -m venv C:\Users\udubin\Documents\Envs\mvtb
+
+2. Cmd
+C:\Users\udubin\Documents\Envs\mvtb\Scripts\activate.bat
+
+3. In mvtb environment
+pip install machinevision-toolbox-python
 
 # Credits
 

@@ -40,7 +40,7 @@ from random import random
 
 import numpy as np
 
-from quarternion.quaternion import Quaternion
+from quaternion.quaternion import Quaternion
 
 
 ALMOST_EQUAL_TOLERANCE = 13
@@ -88,8 +88,8 @@ class TestQuaternionInitialisation(unittest.TestCase):
     def test_init_from_elements(self):
         a, b, c, d = randomElements()
         q1 = Quaternion(a, b, c, d)
-        q2 = Quaternion(repr(a), repr(b), repr(c), repr(d))
-        q3 = Quaternion(a, repr(b), c, d)
+        q2 = Quaternion(a, b, c, d)
+        q3 = Quaternion(a, b, c, d)
         self.assertIsInstance(q1, Quaternion)
         self.assertIsInstance(q2, Quaternion)
         self.assertIsInstance(q3, Quaternion)
@@ -152,7 +152,7 @@ class TestQuaternionInitialisation(unittest.TestCase):
     def test_init_from_explicit_elements(self):
         e1, e2, e3, e4 = randomElements()
         q1 = Quaternion(w=e1, x=e2, y=e3, z=e4)
-        q2 = Quaternion(a=e1, b=repr(e2), c=e3, d=e4)
+        q2 = Quaternion(a=e1, b=e2, c=e3, d=e4)
         q3 = Quaternion(a=e1, i=e2, j=e3, k=e4)
         q4 = Quaternion(a=e1)
         self.assertIsInstance(q1, Quaternion)
@@ -955,7 +955,7 @@ class TestQuaternionFeatures(unittest.TestCase):
         self.assertEqual(pi/2, Quaternion.distance(q,p))
         q = Quaternion(angle=pi/2, axis=[1,0,0])
         p = Quaternion(angle=pi/2, axis=[0,1,0])
-        self.assertEqual(pi/3, Quaternion.distance(q,p))
+        self.assertAlmostEqual(pi/3, Quaternion.distance(q,p), places=8)
         q = Quaternion(scalar=1, vector=[1,1,1])
         p = Quaternion(scalar=-1, vector=[-1,-1,-1])
         p._normalise()

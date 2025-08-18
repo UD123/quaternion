@@ -1,15 +1,17 @@
-"""3D Projective Geometric Algebra.
+"""3D Geometric Algebra.
 
-Written by a generator written by enki.
+Created by  : https://bivector.net/tools.html?p=0&q=2&r=0
+
+Quaternion algebra based on Clifford Algebra (0,2,0)
 """
 
 __author__ = 'Enki'
 
 import math
 
-class QUAT:
+class Quaternion:
     def __init__(self, value=0, index=0):
-        """Initiate a new QUAT.
+        """Initiate a new Quaternion.
          
         Optional, the component index can be set with value.
         """
@@ -20,7 +22,7 @@ class QUAT:
             
     @classmethod
     def fromarray(cls, array):
-        """Initiate a new QUAT from an array-like object.
+        """Initiate a new Quaternion from an array-like object.
 
         The first axis of the array is assumed to correspond to the elements
         of the algebra, and needs to have the same length. Any other dimensions
@@ -29,7 +31,7 @@ class QUAT:
         candidate. 
 
         :param array: array-like object whose length is the dimension of the algebra.
-        :return: new instance of QUAT.
+        :return: new instance of Quaternion.
         """
         self = cls()
         if len(array) != len(self):
@@ -57,7 +59,7 @@ class QUAT:
         return len(self.mvec)
 
     def __invert__(a):
-        """QUAT.Reverse
+        """Quaternion.Reverse
         
         Reverse the order of the basis blades.
         """
@@ -66,10 +68,10 @@ class QUAT:
         res[1]=a[1]
         res[2]=a[2]
         res[3]=-a[3]
-        return QUAT.fromarray(res)
+        return Quaternion.fromarray(res)
 
     def Dual(a):
-        """QUAT.Dual
+        """Quaternion.Dual
         
         Poincare duality operator.
         """
@@ -78,10 +80,10 @@ class QUAT:
         res[1]=-a[2]
         res[2]=a[1]
         res[3]=a[0]
-        return QUAT.fromarray(res)
+        return Quaternion.fromarray(res)
 
     def Conjugate(a):
-        """QUAT.Conjugate
+        """Quaternion.Conjugate
         
         Clifford Conjugation
         """
@@ -90,10 +92,10 @@ class QUAT:
         res[1]=-a[1]
         res[2]=-a[2]
         res[3]=-a[3]
-        return QUAT.fromarray(res)
+        return Quaternion.fromarray(res)
 
     def Involute(a):
-        """QUAT.Involute
+        """Quaternion.Involute
         
         Main involution
         """
@@ -102,10 +104,10 @@ class QUAT:
         res[1]=-a[1]
         res[2]=-a[2]
         res[3]=a[3]
-        return QUAT.fromarray(res)
+        return Quaternion.fromarray(res)
 
     def __mul__(a,b):
-        """QUAT.Mul
+        """Quaternion.Mul
         
         The geometric product.
         """
@@ -116,7 +118,7 @@ class QUAT:
         res[1]=b[1]*a[0]+b[0]*a[1]+b[3]*a[2]-b[2]*a[3]
         res[2]=b[2]*a[0]-b[3]*a[1]+b[0]*a[2]+b[1]*a[3]
         res[3]=b[3]*a[0]+b[2]*a[1]-b[1]*a[2]+b[0]*a[3]
-        return QUAT.fromarray(res)
+        return Quaternion.fromarray(res)
     __rmul__=__mul__
 
     def __xor__(a,b):
@@ -125,7 +127,7 @@ class QUAT:
         res[1]=b[1]*a[0]+b[0]*a[1]
         res[2]=b[2]*a[0]+b[0]*a[2]
         res[3]=b[3]*a[0]+b[2]*a[1]-b[1]*a[2]+b[0]*a[3]
-        return QUAT.fromarray(res)
+        return Quaternion.fromarray(res)
 
 
     def __and__(a,b):
@@ -134,7 +136,7 @@ class QUAT:
         res[2]=-1*(a[2]*-1*b[3]+a[3]*b[2]*-1)
         res[1]=1*(a[1]*b[3]+a[3]*b[1])
         res[0]=1*(a[0]*b[3]+a[1]*b[2]*-1-a[2]*-1*b[1]+a[3]*b[0])
-        return QUAT.fromarray(res)
+        return Quaternion.fromarray(res)
 
 
     def __or__(a,b):
@@ -143,11 +145,11 @@ class QUAT:
         res[1]=b[1]*a[0]+b[0]*a[1]+b[3]*a[2]-b[2]*a[3]
         res[2]=b[2]*a[0]-b[3]*a[1]+b[0]*a[2]+b[1]*a[3]
         res[3]=b[3]*a[0]+b[0]*a[3]
-        return QUAT.fromarray(res)
+        return Quaternion.fromarray(res)
 
 
     def __add__(a,b):
-        """QUAT.Add
+        """Quaternion.Add
         
         Multivector addition
         """
@@ -158,11 +160,11 @@ class QUAT:
         res[1] = a[1]+b[1]
         res[2] = a[2]+b[2]
         res[3] = a[3]+b[3]
-        return QUAT.fromarray(res)
+        return Quaternion.fromarray(res)
     __radd__=__add__
 
     def __sub__(a,b):
-        """QUAT.Sub
+        """Quaternion.Sub
         
         Multivector subtraction
         """
@@ -173,10 +175,10 @@ class QUAT:
         res[1] = a[1]-b[1]
         res[2] = a[2]-b[2]
         res[3] = a[3]-b[3]
-        return QUAT.fromarray(res)
+        return Quaternion.fromarray(res)
 
     def __rsub__(a,b):
-        """QUAT.Sub
+        """Quaternion.Sub
                 
         Multivector subtraction
         """
@@ -189,7 +191,7 @@ class QUAT:
         res[1] = a*b[1]
         res[2] = a*b[2]
         res[3] = a*b[3]
-        return QUAT.fromarray(res)
+        return Quaternion.fromarray(res)
 
 
     def muls(a,b):
@@ -198,7 +200,7 @@ class QUAT:
         res[1] = a[1]*b
         res[2] = a[2]*b
         res[3] = a[3]*b
-        return QUAT.fromarray(res)
+        return Quaternion.fromarray(res)
 
 
     def sadd(a,b):
@@ -207,7 +209,7 @@ class QUAT:
         res[1] = b[1]
         res[2] = b[2]
         res[3] = b[3]
-        return QUAT.fromarray(res)
+        return Quaternion.fromarray(res)
 
 
     def adds(a,b):
@@ -216,7 +218,7 @@ class QUAT:
         res[1] = a[1]
         res[2] = a[2]
         res[3] = a[3]
-        return QUAT.fromarray(res)
+        return Quaternion.fromarray(res)
 
 
     def ssub(a,b):
@@ -225,7 +227,7 @@ class QUAT:
         res[1] = -b[1]
         res[2] = -b[2]
         res[3] = -b[3]
-        return QUAT.fromarray(res)
+        return Quaternion.fromarray(res)
 
 
     def subs(a,b):
@@ -234,7 +236,7 @@ class QUAT:
         res[1] = a[1]
         res[2] = a[2]
         res[3] = a[3]
-        return QUAT.fromarray(res)
+        return Quaternion.fromarray(res)
 
 
     def norm(a):
@@ -246,11 +248,14 @@ class QUAT:
     def normalized(a):
         return a * (1 / a.norm())
 
-e1 = QUAT(1.0, 1)
-e2 = QUAT(1.0, 2)
-e12 = QUAT(1.0, 3)
+
 
 if __name__ == '__main__':
+
+    e1 = Quaternion(1.0, 1)
+    e2 = Quaternion(1.0, 2)
+    e12 = Quaternion(1.0, 3)
+    
     print("e1*e1         :", str(e1*e1))
     print("pss           :", str(e12))
     print("pss*pss       :", str(e12*e12))
