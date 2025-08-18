@@ -40,9 +40,7 @@ from random import random
 
 import numpy as np
 
-from quaternion import quaternion
-
-Quaternion = quaternion.Quaternion
+from quarternion.quaternion import Quaternion
 
 
 ALMOST_EQUAL_TOLERANCE = 13
