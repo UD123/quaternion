@@ -17,6 +17,98 @@ helper (`quaternion_matplot`), or detailed teaching figures
 
 ---
 
+## Flag encoding of a quaternion
+
+Both visualizing packages draw a unit (or near-unit) quaternion
+
+$$q = w + x\,\mathbf{i} + y\,\mathbf{j} + z\,\mathbf{k}, \qquad
+  \|q\|^2 = w^2 + x^2 + y^2 + z^2$$
+
+as a small **flag** in 3D. A quaternion has four real numbers, so the flag
+needs four visual degrees of freedom. They are mapped as follows:
+
+| Quaternion quantity | Geometric meaning | Flag element |
+| --- | --- | --- |
+| Imaginary part `(x, y, z)` | Rotation axis $\hat{n} = (x,y,z)/\sin(\theta/2)$ — 2 d.o.f. (direction on the unit sphere) | **Pole**: a line from the origin pointing along $\hat{n}$ |
+| Scalar part `w` | Rotation angle $\theta = 2\arccos(w)$ — 1 d.o.f. | **Pennant** rotated by $\theta$ around the pole (and the labelled arc next to the pole tip) |
+| Norm $\|q\|$ | Magnitude — 1 d.o.f. (= 1 for a rotation) | **Pole length** (only in `simplega`'s `add_unnormalized_flag` and in `matplot`'s `QuaternionPlot.plot`); unit quaternions use a fixed length |
+| Sign of $w$ | The double-cover ambiguity ($q$ and $-q$ are the same rotation) | Both packages normalize to $w \ge 0$, so the pennant always sweeps the *short* way around the pole |
+
+So in one picture you can read off: **where the rotation axis points** (the
+pole), **how much the rotation is** (the pennant's angular offset around the
+pole, also written next to the small arc), and **how long the quaternion is**
+(the pole length, when not normalized).
+
+### `simplega`'s `add_flag` — the explicit construction
+
+Given $\hat{n}$ and $\theta$:
+
+1. Pick any unit vector $u \perp \hat{n}$, and let $v = \hat{n} \times u$.
+   Together $(u, v, \hat{n})$ form an orthonormal frame; $u$ marks the
+   $\theta = 0$ reference.
+2. The pennant tip is placed at the pole tip $P = \hat{n}$ and points in the
+   direction $\cos\theta \cdot u + \sin\theta \cdot v$, i.e. it has rotated by
+   $\theta$ around the pole.
+3. A dashed gray line shows $u$ (the $\theta = 0$ reference) and a small
+   coloured arc sweeps from $u$ to the pennant, labelled with $\theta$ in
+   degrees.
+
+### `matplot`'s `QuaternionPlot.plot` — the implicit construction
+
+`matplot` does not build the pennant from $(\hat{n}, \theta)$ directly. It
+draws a flat reference flag in the $x$–$z$ plane (pole along $+x$, triangular
+pennant at the pole tip) and then **rotates the whole flag by $q$** using
+`q.rotate(point)`. The same four d.o.f. are still visible — pole direction =
+axis, pennant orientation around the pole = angle, pole length =
+`self.norm` — but the angle is shown *implicitly* by where the pennant ends
+up rather than via an explicit arc.
+
+### Reading examples
+
+* **Figure 1 (`doc/simplega_fig1.png`)** — two flags for $q = $ 90° about
+  $\hat{z}$ and its conjugate $q^\dagger$. Same pole (the $z$-axis), opposite
+  pennant directions, arcs labelled `+90°` and `−90°`.
+* **Figure 5 (`doc/simplega_fig5.png`)** — three unit quaternions
+  (90° $\hat{z}$, 60° $\hat{x}$, 120° $(\hat{x}+\hat{y})$). The three poles
+  give you the rotation axes at a glance; the three arcs/pennants give the
+  angles.
+* **Figure 6 (`doc/simplega_fig6.png`)** — four *unnormalized* quaternions.
+  Pole lengths visibly differ ($\|q\|$ from ≈ 0.36 up to ≈ 1.72) while the
+  pennant still encodes $\theta = 2\arccos(w/\|q\|)$.
+* **`doc/matplot_multiplication.png`** — same flag style, used to read off
+  multiplication geometrically: $q_3 = q_2 \cdot q_1$, $q_4 = q_2^{-1}$,
+  $q_5 = q_3 \cdot q_4 = q_2 \cdot q_1 \cdot q_2^{-1}$ — the conjugation that
+  rotates $q_1$'s axis by $q_2$.
+
+### Minimal code
+
+```python
+# simplega: explicit flag, normalized
+import math
+from quaternion_simplega.quaternions import Quaternion
+from quaternion_simplega.quaternion_visualization import QuaternionVisualizer
+
+q = Quaternion(math.cos(math.pi / 4), 0, 0, math.sin(math.pi / 4))  # 90° about z
+(QuaternionVisualizer().draw_axes().add_unit_sphere().set_limits(1.5)
+    .add_flag(q, color="steelblue", label="q  (90° z)")
+    .add_flag(q.conj(), color="tomato", label="q†  (−90° z)")
+    .legend().show())
+
+# simplega: pole length encodes the norm
+from quaternion_simplega.quaternions import Quaternion
+from quaternion_simplega.quaternion_visualization import visualize_unnormalized_flag
+visualize_unnormalized_flag(Quaternion(1.5, 0.6, 0.0, 0.6))   # ‖q‖ ≈ 1.72
+
+# matplot: implicit flag (rotated reference flag)
+from quaternion_matplot.quaternion_plot import QuaternionPlot
+import matplotlib.pyplot as plt
+ax = QuaternionPlot(axis=[1, 0, 0], degrees=90).plot(clr="r")
+ax = QuaternionPlot(axis=[0, 1, 0], degrees=90).plot(ax, clr="g")
+plt.show()
+```
+
+---
+
 ## `quaternion_wynn/` — pyquaternion port
 
 A near-verbatim copy of Kieran Wynn's `pyquaternion` module. Supports
