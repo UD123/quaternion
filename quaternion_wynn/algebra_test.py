@@ -19,7 +19,7 @@ from math import pi, sin, cos
 from random import random
 import numpy as np
 
-from quaternion.algebra import Quaternion
+from quaternion_wynn.algebra import Quaternion
 
 ALMOST_EQUAL_TOLERANCE = 13
 

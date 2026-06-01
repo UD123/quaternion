@@ -33,7 +33,9 @@ demo.py - Demo of pyquaternion using matplotlib
 """
 
 import numpy as np
-from quaternion.quaternion import Quaternion
+
+#from pyquaternion import Quaternion
+from quaternion import Quaternion
 
 #import matplotlib
 #matplotlib.use('TKAgg')

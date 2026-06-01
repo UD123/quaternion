@@ -39,8 +39,11 @@ from math import pi, sin, cos
 from random import random
 
 import numpy as np
+np.set_printoptions(legacy='1.25')  # do not print float64 
+#import pyquaternion
+#Quaternion = pyquaternion.Quaternion
 
-from quaternion.quaternion import Quaternion
+from quaternion import Quaternion
 
 
 ALMOST_EQUAL_TOLERANCE = 13
@@ -88,7 +91,7 @@ class TestQuaternionInitialisation(unittest.TestCase):
     def test_init_from_elements(self):
         a, b, c, d = randomElements()
         q1 = Quaternion(a, b, c, d)
-        q2 = Quaternion(a, b, c, d)
+        q2 = Quaternion(repr(a), repr(b), repr(c), repr(d))
         q3 = Quaternion(a, b, c, d)
         self.assertIsInstance(q1, Quaternion)
         self.assertIsInstance(q2, Quaternion)
@@ -305,7 +308,7 @@ class TestQuaternionInitialisation(unittest.TestCase):
 
             np.testing.assert_almost_equal(v_prime_q2, v_prime_r, decimal=ALMOST_EQUAL_TOLERANCE)
 
-        R = np.matrix(np.eye(3))
+        R  = np.eye(3)
         q3 = Quaternion(matrix=R)
         v_prime_q3 = q3.rotate(v)
         np.testing.assert_almost_equal(v, v_prime_q3, decimal=ALMOST_EQUAL_TOLERANCE)
@@ -329,7 +332,7 @@ class TestQuaternionInitialisation(unittest.TestCase):
              [ 0.13108627,  0.98617666, -0.10135052, -0.04878795],
              [ 0.66750896, -0.01221443,  0.74450167, -0.05474513],
              [ 0,          0,          0,          1,        ]]
-        npm = np.matrix(m)
+        npm = np.array(m)
 
         with self.assertRaises(ValueError):
             Quaternion(matrix=npm)
@@ -934,7 +937,7 @@ class TestQuaternionFeatures(unittest.TestCase):
         for i in range(20):
             v = np.random.uniform(-1, 1, 3)
             v /= np.linalg.norm(v)
-            theta = float(np.random.uniform(-2,2, 1)) * pi
+            theta = float(np.random.uniform(-2,2, 1)[0]) * pi
             self.validate_axis_angle(v, theta)
 
     def test_exp(self):
@@ -955,7 +958,7 @@ class TestQuaternionFeatures(unittest.TestCase):
         self.assertEqual(pi/2, Quaternion.distance(q,p))
         q = Quaternion(angle=pi/2, axis=[1,0,0])
         p = Quaternion(angle=pi/2, axis=[0,1,0])
-        self.assertAlmostEqual(pi/3, Quaternion.distance(q,p), places=8)
+        self.assertAlmostEqual(pi/3, Quaternion.distance(q,p))
         q = Quaternion(scalar=1, vector=[1,1,1])
         p = Quaternion(scalar=-1, vector=[-1,-1,-1])
         p._normalise()

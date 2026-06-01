@@ -1,4 +1,5 @@
-from quarternion.quaternion import Quaternion
+#import pyquaternion
+from quaternion import Quaternion
 
 
 # Create a quaternion representing a rotation of +90 degrees about positive y axis.
